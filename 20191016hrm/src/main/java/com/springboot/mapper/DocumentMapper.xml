@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.mapper.DocumentMapper">
+
+	<insert id="add" parameterType="com.springboot.bean.Document">
+		insert into hrm_document(title,url,remark,create_date,user_id)
+		 values (#{title},#{url},#{remark},#{createDate},#{userId})
+	</insert>
+
+
+	<select id="getUser" parameterType="int" resultType="Document">
+		select *from hrm_document where id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="int">
+		delete from hrm_document where id=#{id}
+	</delete>
+
+
+	<update id="updateById" parameterType="Document">
+      update hrm_document set title=#{title},remark=#{remark} where id=#{id}
+	</update>
+
+	<sql id="base_sql">
+		<where>
+			<if test="title!=null">
+              title like #{title}
+			</if>
+		</where>
+	</sql>
+
+	<select id="findUsers" resultMap="documentResult" parameterType="hashmap">
+      select * from hrm_document <include refid="base_sql"></include>
+	</select>
+
+
+	<resultMap id="documentResult" type="com.springboot.bean.Document" autoMapping="true">
+		<result column="id" property="id"></result>
+		<result column="title" property="title"></result>
+		<result column="remark" property="remark"></result>
+		<result column="create_date" property="createDate"></result>
+		<association property="user" column="user_id" javaType="User" select="com.springboot.mapper.UserMapper.getUser">
+		</association>
+
+	</resultMap>
+</mapper>

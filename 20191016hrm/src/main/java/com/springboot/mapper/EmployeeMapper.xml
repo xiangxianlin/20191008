@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.mapper.EmployeeMapper">
+
+	<select id="findUsers" resultMap="employeeResult">
+    <![CDATA[ SELECT * from hrm_employee]]> <include refid="base_sql"></include> order by id asc
+    </select>
+	<resultMap id="employeeResult" type="com.springboot.bean.Employee" autoMapping="true">
+		<result column="card_id" property="cardId"></result>
+		<result column="post_code" property="postCode"></result>
+		<result column="QQ_NUM" property="qqNum"></result>
+		<result column="CREATE_DATE" property="createDate"></result>
+		<association property="job" column="job_id" javaType="Job" select="com.springboot.mapper.JobMapper.getUser"></association>
+		<association property="dept" column="dept_id" javaType="Dept" select="com.springboot.mapper.DeptMapper.getUser"></association>
+	</resultMap>
+
+	<sql id="base_sql">
+		<where>
+			<if test="name!=null">
+				and name like #{name}
+			</if>
+			<if test="phone!=null">
+				and phone like #{phone}
+			</if>
+			<if test="cardId!=null">
+				and card_Id like #{cardId}
+			</if>
+			<if test="jobId!=null">
+				and job_id = #{jobId}
+			</if>
+			<if test="sex!=null">
+				and sex = #{sex}
+			</if>
+			<if test="deptId!=null">
+				and dept_id = #{deptId}
+			</if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="Employee">
+		insert into hrm_employee (DEPT_ID,JOB_ID,name,card_Id,ADDRESS,SEX,POST_CODE,TEL,
+		PHONE,QQ_NUM,EMAIL,PARTY,BIRTHDAY,RACE,EDUCATION,SPECIALITY,PICTURE,HOBBY,REMARK,CREATE_DATE)
+		values(#{dept.id},#{job.id},#{name},#{cardId},#{address},#{sex},#{postCode},#{tel},#{phone},#{qqNum},#{email},
+		#{party},#{birthday},#{race},#{education},#{speciality},#{picture},#{hobby},#{remark},#{createDate})
+	</insert>
+
+	<delete id="deleteById" parameterType="int">
+		delete from hrm_employee where id=#{id}
+	</delete>
+
+	<!--查询指定id的员工-->
+	<select id="getUser" parameterType="int" resultMap="employeeResult">
+		select *from hrm_employee where id=#{id}
+	</select>
+
+	<!--修改操作-->
+	<update id="updateById" parameterType="Employee">
+		update hrm_employee set name=#{name},card_Id=#{cardId},SEX=#{sex},JOB_ID=#{job.id},ADDRESS=#{address},POST_CODE=#{postCode},
+        QQ_NUM=#{qqNum},TEL=#{tel},PHONE=#{phone},EMAIL=#{email},party=#{party},BIRTHDAY=#{birthday},RACE=#{race},
+        EDUCATION=#{education},SPECIALITY=#{speciality},HOBBY=#{hobby},REMARK=#{remark},DEPT_ID=#{dept.id} where id=#{id}
+	</update>
+
+</mapper>

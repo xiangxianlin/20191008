@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.springboot.mapper.UserMapper">
+
+<select id="findUsers" resultMap="userResult">
+	<![CDATA[ SELECT * from hrm_user]]> order by id asc
+</select>
+
+	<resultMap id="userResult" type="com.springboot.bean.User">
+		<result column="id" property="id"></result>
+		<result column="name" property="name"></result>
+		<result column="pass_word" property="passWord"></result>
+		<result column="status" property="status"></result>
+		<result column="CREATE_DATE" property="createDate"></result>
+	</resultMap>
+
+<!--修改用户状态-->
+	<update id="check">
+		update hrm_user set status=#{status} where id=#{id}
+	</update>
+
+	<!--删除操作-->
+	<delete id="deleteById" parameterType="int">
+		delete from hrm_user where id=#{id}
+	</delete>
+
+	<!--添加-->
+	<insert id="add" parameterType="User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+      insert into hrm_user(name,pass_word,status) values(#{name},#{passWord},#{status})
+	</insert>
+
+	 <!--修改操作-->
+	<update id="updateById" parameterType="User">
+		update  hrm_user set name=#{name}
+		<if test="passWord!=null">
+			,pass_Word=#{passWord}
+		</if>
+		where id=#{id}
+	</update>
+
+	<!--查询指定id的值-->
+	<select id="getUser" parameterType="int" resultMap="userResult">
+		select * from hrm_user where id=#{id}
+	</select>
+
+
+</mapper>

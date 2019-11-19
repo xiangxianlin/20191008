@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.mapper.JobMapper">
+	<select id="findUsers" resultMap="jobResult">
+		<![CDATA[ SELECT * from hrm_job]]> order by id asc
+</select>
+
+	<resultMap id="jobResult" type="com.springboot.bean.Job">
+		<result column="id" property="id"></result>
+		<result column="name" property="name"></result>
+		<result column="remark" property="remark"></result>
+	</resultMap>
+
+	<!--添加操作-->
+	<insert id="add" parameterType="Job" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+      insert into hrm_job(name,remark) values(#{name},#{remark})
+	</insert>
+
+	<!--删除操作-->
+	<delete id="deleteById" parameterType="int">
+		delete from hrm_job where id=#{id}
+	</delete>
+
+	<!--查询指定id的职位-->
+	<select id="getUser" parameterType="int" resultMap="jobResult">
+		select * from hrm_job where id=#{id}
+	</select>
+
+	<!--修改操作-->
+	<update id="updateById" parameterType="Dept">
+		update  hrm_job set name=#{name}
+		<if test="remark!=null">
+			,remark=#{remark}
+		</if>
+		where id=#{id}
+	</update>
+
+</mapper>
